@@ -33,20 +33,37 @@ admin.initializeApp(functions.config().firebase);
           
 
        })*/
-      // const db = firebase.firestore()
-       exports.SendDoc=functions.https.onRequest((req, res) =>{
-                           const prod = admin.firestore().collection('products');
-                           prod.get() 
-                                .then(e=>{
-                                    let arrayR = e.docs.map(doc => {
-                                        return doc.data();
-                                     }); 
-                                     res.json(arrayR);
-                                    //e.forEach(doc=>{
-                                      //  const dt = doc.data();
-                                      //   console.log(dt) 
-                                      //   res.send(dt);
-                                       //  });
-                                   });
-                                })
+       const db = admin.firestore()
+       exports.SendDoc=functions.https.onRequest(async(req, res) =>{
+                           const prod = db.collection('products');
+                           let arr= [];
+                           const e= await prod.get(); 
+                                    e.forEach(doc=>{
+                                        const dt = doc.data();
+                                        Id=doc.id;
+                                        const dataa={...dt, Id};
+                                        arr.push(dataa);
+                                         });
+                                         res.json({
+                                             arr
+                                         })    
+});
+
+exports.ReadDoc= functions.https.onRequest(async(req, res)=>{
+    const query = await db.collection('products').get();
+    query.forEach(doc=>{
+        const ID = doc.id;
+        const dt=doc.data();
+        if(req.body==ID){
+            res.json({
+                dt
+            })
+        }
+    })
+})
+
+
+
+
+                                
                        
