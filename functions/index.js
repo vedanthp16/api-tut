@@ -44,23 +44,36 @@ admin.initializeApp(functions.config().firebase);
                                         const dataa={...dt, Id};
                                         arr.push(dataa);
                                          });
-                                         res.json({
+                                         res.json(
                                              arr
-                                         })    
+                                         )    
 });
 
 exports.ReadDoc= functions.https.onRequest(async(req, res)=>{
+    const ID = req.body.id;
+    const query = await db.collection('products').doc(ID).get();
+        const dt=query.data();
+            res.json(dt)
+  })  
+
+exports.EditDoc = functions.https.onRequest(async(req, res)=>{
     const query = await db.collection('products').get();
     query.forEach(doc=>{
         const ID = doc.id;
+       // const dt=doc.data();
+        if(req.body.id==ID){
+            db.collection('products').doc(ID).update({
+                price: req.body.price
+            })
+         
         const dt=doc.data();
-        if(req.body==ID){
             res.json({
                 dt
             })
         }
+        })
+    
     })
-})
 
 
 
