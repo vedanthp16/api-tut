@@ -38,13 +38,15 @@ admin.initializeApp(functions.config().firebase);
                            const prod = admin.firestore().collection('products');
                            prod.get() 
                                 .then(e=>{
-                                    e.forEach(doc=>{
-                                        const dt = doc.data();
-                                         console.log(dt) 
-                                         res.json({
-                                             
-                                             object1: dt
-                                         });
+                                    let arrayR = e.docs.map(doc => {
+                                        return doc.data();
+                                     }); 
+                                     res.json(arrayR);
+                                    //e.forEach(doc=>{
+                                      //  const dt = doc.data();
+                                      //   console.log(dt) 
+                                      //   res.send(dt);
+                                       //  });
                                    });
                                 })
-                       })
+                       
