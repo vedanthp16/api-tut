@@ -1,5 +1,7 @@
 const functions = require("firebase-functions");
 const cors = require('cors')({origin: true});
+const express = require('express');
+const app= express();
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -34,7 +36,7 @@ admin.initializeApp(functions.config().firebase);
 
        })*/
        const db = admin.firestore()
-       exports.SendDoc=functions.https.onRequest(async(req, res) =>{
+       app.get('/SendDoc', async(req, res) =>{
                            const prod = db.collection('products');
                            let arr= [];
                            const e= await prod.get(); 
@@ -49,14 +51,14 @@ admin.initializeApp(functions.config().firebase);
                                          )    
 });
 
-exports.ReadDoc= functions.https.onRequest(async(req, res)=>{
+app.post('/ReadDoc', async(req, res)=>{
     const ID = req.body.id;
     const query = await db.collection('products').doc(ID).get();
         const dt=query.data();
             res.json(dt)
   })  
 
-exports.EditDoc = functions.https.onRequest(async(req, res)=>{
+app.post('/EditDoc', async(req, res)=>{
     const query = await db.collection('products').get();
     query.forEach(doc=>{
         const ID = doc.id;
@@ -76,7 +78,7 @@ exports.EditDoc = functions.https.onRequest(async(req, res)=>{
     })
 
 
-
+exports.DocDetails = functions.region('asia-south1').https.onRequest(app);
 
                                 
                        
