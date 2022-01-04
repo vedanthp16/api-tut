@@ -59,24 +59,21 @@ app.post('/ReadDoc', async(req, res)=>{
   })  
 
 app.post('/EditDoc', async(req, res)=>{
-    const query = await db.collection('products').get();
-    query.forEach(doc=>{
-        const ID = doc.id;
-       // const dt=doc.data();
-        if(req.body.id==ID){
-            db.collection('products').doc(ID).update({
-                price: req.body.price
-            })
-         
-        const dt=doc.data();
+    const ID = req.body.id;
+    const dt= req.body;
+    await db.collection('products').doc(ID).update({
+        dt 
+    })
             res.json({
                 dt
             })
-        }
+        
         })
-    
-    })
 
+app.post('/DeleteDoc', async(req,res)=>{
+    const ID = req.body.id;
+    await db.collection('products').doc(ID).delete();
+})
 
 exports.DocDetails = functions.region('asia-south1').https.onRequest(app);
 
